@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NoteVTranizer.Views.NotesPage"   
+             xmlns:local="clr-namespace:NoteVTranizer.ViewModels"  
+             xmlns:model="clr-namespace:NoteVTranizer.Models" 
+             Title="{Binding Title}"
+             x:Name="BrowseNotesPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Email Notes" Command="{Binding EmailNotesCommand}"/>
+        <ToolbarItem Text="Add" Command="{Binding AddNoteCommand}" />
+    </ContentPage.ToolbarItems>
+    <!--  SelectionMode="None"
+      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
+      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
+    -->
+
+    <RefreshView x:DataType="local:NotesViewModel" Command="{Binding LoadNotesCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <CollectionView x:Name="NotesListView"
+                ItemsSource="{Binding Notes}"
+               >
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.LeftItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Email Note"
+                                           IconImageSource="Email_64.png"
+                                           BackgroundColor="LightGreen"
+                                           Command="{Binding Source={x:Reference NotesListView}, Path=BindingContext.EmailCommand}"
+                                           CommandParameter="{Binding Source={RelativeSource Self}, Path=BindingContext}" />
+                                <SwipeItem Text="Delete"
+                                           IconImageSource="delete.png"
+                                           BackgroundColor="LightPink"
+                                           Command="{Binding Source={x:Reference NotesListView}, Path=BindingContext.DeleteCommand}"
+                                           CommandParameter="{Binding Source={RelativeSource Self}, Path=BindingContext}" />
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+                        <StackLayout Padding="3" x:DataType="model:Note" Orientation="Horizontal">
+                            <Grid BackgroundColor="LightCyan">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*"></ColumnDefinition>
+                                    <ColumnDefinition Width="95*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Row="0" Grid.Column="0" Source="vtGreenDotx.png">
+                                    <Image.Triggers>
+                                        <DataTrigger TargetType="Image" Binding="{Binding Priority}" Value="3">
+                                            <Setter Property="Source"  Value="vtRedDotx.png" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image" Binding="{Binding Priority}" Value="2">
+                                            <Setter Property="Source"  Value="vtBlueDotx.png" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Image" Binding="{Binding Priority}" Value="1">
+                                            <Setter Property="Source"  Value="vtGreenDotx.png" />
+                                        </DataTrigger>
+                                    </Image.Triggers>
+                                </Image>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Text}" LineBreakMode="NoWrap"
+                                    Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding ExpiredDate,StringFormat='Expired on {0:d}'}" 
+                                        LineBreakMode="NoWrap"
+                                        Style="{DynamicResource ListItemDetailTextStyle}"
+                                        FontSize="13" />
+                                <!--<BoxView Grid.ColumnSpan="2" BackgroundColor="DarkGray"  Opacity="0.2"  HeightRequest="1" VerticalOptions="Start" HorizontalOptions="FillAndExpand"></BoxView>-->
+                            </Grid>
+                            <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:NotesViewModel}}, Path=NoteTapped}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </StackLayout.GestureRecognizers>  
+                        </StackLayout>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

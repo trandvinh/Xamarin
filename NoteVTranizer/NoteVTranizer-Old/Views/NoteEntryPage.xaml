@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:viewmodels="clr-namespace:NoteVTranizer.ViewModels" x:DataType="viewmodels:NoteEntryViewModel"
+             x:Class="NoteVTranizer.Views.NoteEntryPage"
+             Title="Note Entry">
+    <ContentPage.Resources>
+        <!-- Implicit styles -->
+        <Style TargetType="{x:Type Editor}">
+            <Setter Property="BackgroundColor"
+                    Value="{StaticResource AppBackgroundColor}" />
+        </Style>
+    </ContentPage.Resources>
+
+    <!-- Layout children vertically -->
+    <StackLayout Margin="{StaticResource PageMargin}">
+        <Editor Placeholder="Enter your note"
+                Text="{Binding Text , Mode=TwoWay}"
+                HeightRequest="100" />
+     
+        <StackLayout Orientation="Horizontal" Spacing="10">
+            <Label  Text="Use Email" FontSize="Medium"/>
+            <Switch IsToggled="{Binding TheNode.UseEmail}"/>
+        </StackLayout>
+        <Picker x:Name="PriorityPicker" ItemDisplayBinding="{Binding PriorityName}" 
+                    Title="Select a Prority" ItemsSource="{Binding PriorityList}" SelectedItem="{Binding SelectPriority , Mode=TwoWay}" />
+        <Grid ColumnDefinitions="*,*">
+            <!-- Layout children in two columns -->
+            <Button Text="Save"
+                    Command="{Binding SaveCommand}" />
+            <Button Grid.Column="1"
+                    Text="ActionTitle"
+                   Command="{Binding DeleteCommand}">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsDeleteVisible}" Value="false">
+                        <Setter Property="Text"  Value="Cancel" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsDeleteVisible}" Value="true">
+                        <Setter Property="Text"  Value="Delete" />
+                    </DataTrigger>
+                </Button.Triggers>
+
+            </Button>
+            <!--  <Button Grid.Column="1"
+                    Text="Cancel"
+                   Command="{Binding DeleteCommand} IsVisible="{Binding IsDeleteVisible}"/> -->
+        </Grid>
+    </StackLayout>
+</ContentPage>

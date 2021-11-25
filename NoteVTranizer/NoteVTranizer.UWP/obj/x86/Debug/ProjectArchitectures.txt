@@ -1,0 +1,1 @@
+C:\Work\Mobile\NoteVTranizer\NoteVTranizer.UWP\NoteVTranizer.UWP.csproj;x86
